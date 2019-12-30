@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 import me.maxandroid.libnavannotation.FragmentDestination;
 import me.maxandroid.ppjoke.R;
 
-@FragmentDestination(pageUrl = "main/tabs/notification")
+@FragmentDestination(pageUrl = "main/tabs/find")
 public class NotificationsFragment extends Fragment {
 
     private NotificationsViewModel notificationsViewModel;

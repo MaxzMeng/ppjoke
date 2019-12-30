@@ -132,7 +132,7 @@ public class NavProcessor extends AbstractProcessor {
                 object.put("needLogin", needLogin);
                 object.put("asStarter", asStater);
                 object.put("pageUrl", pageUrl);
-                object.put("clazzName", ClazzName);
+                object.put("className", ClazzName);
                 object.put("isFragment", isFragment);
                 destMap.put(pageUrl, object);
             }
