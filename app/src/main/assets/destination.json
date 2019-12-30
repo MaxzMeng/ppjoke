@@ -1,0 +1,26 @@
+{
+  "main/tabs/dash": {
+    "isFragment": true,
+    "asStarter": false,
+    "needLogin": false,
+    "pageUrl": "main/tabs/dash",
+    "id": 1268725102,
+    "clazzName": "me.maxandroid.ppjoke.ui.dashboard.DashboardFragment"
+  },
+  "main/tabs/home": {
+    "isFragment": true,
+    "asStarter": true,
+    "needLogin": false,
+    "pageUrl": "main/tabs/home",
+    "id": 125746778,
+    "clazzName": "me.maxandroid.ppjoke.ui.home.HomeFragment"
+  },
+  "main/tabs/notification": {
+    "isFragment": true,
+    "asStarter": false,
+    "needLogin": false,
+    "pageUrl": "main/tabs/notification",
+    "id": 526427846,
+    "clazzName": "me.maxandroid.ppjoke.ui.notifications.NotificationsFragment"
+  }
+}
