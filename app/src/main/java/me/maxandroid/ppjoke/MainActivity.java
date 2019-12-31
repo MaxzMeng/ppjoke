@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,9 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import me.maxandroid.network.libnetwork.ApiResponse;
+import me.maxandroid.network.libnetwork.GetRequest;
+import me.maxandroid.network.libnetwork.JsonCallback;
 import me.maxandroid.ppjoke.utils.NavGraphBuilder;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +33,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         NavGraphBuilder.build(navController, this, R.id.nav_host_fragment);
         navView.setOnNavigationItemSelectedListener(this);
+
+
+        GetRequest<JSONObject> request = new GetRequest<>("http://www.mooc.com");
+        //request.execute();
+
+        request.execute(new JsonCallback<JSONObject>() {
+            @Override
+            public void onSuccess(ApiResponse<JSONObject> response) {
+                System.out.println(response);
+            }
+        });
     }
 
     @Override
