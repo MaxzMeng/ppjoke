@@ -12,6 +12,7 @@ import androidx.navigation.fragment.FragmentNavigator;
 
 import java.util.HashMap;
 
+import me.maxandroid.libcommon.AppGlobals;
 import me.maxandroid.ppjoke.FixFragmentNavigator;
 import me.maxandroid.ppjoke.model.Destination;
 

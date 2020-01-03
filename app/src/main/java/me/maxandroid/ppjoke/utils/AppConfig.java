@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
+import me.maxandroid.libcommon.AppGlobals;
 import me.maxandroid.ppjoke.model.BottomBar;
 import me.maxandroid.ppjoke.model.Destination;
 

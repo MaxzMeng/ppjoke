@@ -1,4 +1,4 @@
-package me.maxandroid.ppjoke.utils;
+package me.maxandroid.libcommon;
 
 import android.app.Application;
 
