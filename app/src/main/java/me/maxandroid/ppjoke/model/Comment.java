@@ -1,5 +1,7 @@
 package me.maxandroid.ppjoke.model;
 
+import androidx.annotation.Nullable;
+
 public class Comment {
 
     /**
@@ -26,7 +28,7 @@ public class Comment {
     public long commentId;
     public long userId;
     public int commentType;
-    public int createTime;
+    public long createTime;
     public int commentCount;
     public int likeCount;
     public String commentText;
@@ -37,4 +39,16 @@ public class Comment {
     public boolean hasLiked;
     public User author;
     public Ugc ugc;
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null || !(obj instanceof Comment))
+            return false;
+
+        Comment newComment = (Comment) obj;
+        return likeCount == newComment.likeCount
+                && hasLiked == newComment.hasLiked
+                && (author != null && author.equals(newComment.author))
+                && (ugc != null && ugc.equals(newComment.ugc));
+    }
 }
