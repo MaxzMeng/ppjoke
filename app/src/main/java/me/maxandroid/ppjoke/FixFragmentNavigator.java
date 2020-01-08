@@ -75,7 +75,7 @@ public class FixFragmentNavigator extends FragmentNavigator {
         if (frag == null) {
             frag = instantiateFragment(mContext, mFragmentManager, className, args);
             frag.setArguments(args);
-            ft.add(mContainerId, frag);
+            ft.add(mContainerId, frag, tag);
         } else {
             ft.show(frag);
         }

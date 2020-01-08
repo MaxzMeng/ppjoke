@@ -33,8 +33,8 @@ public class User implements Serializable {
     public int topCommentCount;
     public int followCount;
     public int followerCount;
-    public long qqOpenId;
-    public int expires_time;
+    public String qqOpenId;
+    public long expires_time;
     public int score;
     public int historyCount;
     public int commentCount;

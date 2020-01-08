@@ -59,10 +59,14 @@ public abstract class Request<T> implements Cloneable {
     public Request<T> addParam(String key, Object value) {
         //int string byte char
         try {
-            Field field = value.getClass().getField("TYPE");
-            Class clazz = (Class) field.get(null);
-            if (clazz.isPrimitive()) {
+            if (value.getClass() == String.class) {
                 params.put(key, value);
+            } else {
+                Field field = value.getClass().getField("TYPE");
+                Class claz = (Class) field.get(null);
+                if (claz.isPrimitive()) {
+                    params.put(key, value);
+                }
             }
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -109,7 +113,7 @@ public abstract class Request<T> implements Cloneable {
     }
 
     @SuppressLint("RestrictedApi")
-    public void execute(final JsonCallback<T> callback) {
+    public void execute(final JsonCallback callback) {
         if (mCacheStrategy != NET_ONLY) {
             ArchTaskExecutor.getIOThreadExecutor().execute(new Runnable() {
                 @Override

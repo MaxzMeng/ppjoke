@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import me.maxandroid.libnavannotation.FragmentDestination;
 import me.maxandroid.ppjoke.R;
 
-@FragmentDestination(pageUrl = "main/tabs/my")
+@FragmentDestination(pageUrl = "main/tabs/my", needLogin = true)
 public class MyFragment extends Fragment {
     @Nullable
     @Override
