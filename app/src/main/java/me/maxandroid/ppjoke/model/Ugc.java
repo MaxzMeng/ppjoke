@@ -2,7 +2,9 @@ package me.maxandroid.ppjoke.model;
 
 import androidx.annotation.Nullable;
 
-public class Ugc {
+import java.io.Serializable;
+
+public class Ugc implements Serializable {
     /**
      * likeCount : 153
      * shareCount : 0

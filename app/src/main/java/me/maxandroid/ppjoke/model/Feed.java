@@ -4,7 +4,9 @@ import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
-public class Feed {
+import java.io.Serializable;
+
+public class Feed implements Serializable {
     public static final int TYPE_IMAGE_TEXT = 1;//图文
     public static final int TYPE_VIDEO = 2;//视频
     /**

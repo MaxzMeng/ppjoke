@@ -181,13 +181,12 @@ public abstract class Request<T> implements Cloneable {
             message = e.getMessage();
             success = false;
         }
-
-        if (mCacheStrategy != NET_ONLY && result.success && result.body instanceof Serializable) {
-            saveCache(result.body);
-        }
         result.success = success;
         result.status = status;
         result.message = message;
+        if (mCacheStrategy != NET_ONLY && result.success && result.body instanceof Serializable) {
+            saveCache(result.body);
+        }
         return result;
     }
 

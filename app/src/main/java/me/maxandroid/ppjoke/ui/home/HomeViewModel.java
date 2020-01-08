@@ -23,6 +23,7 @@ import me.maxandroid.network.libnetwork.JsonCallback;
 import me.maxandroid.network.libnetwork.Request;
 import me.maxandroid.ppjoke.AbsViewModel;
 import me.maxandroid.ppjoke.model.Feed;
+import me.maxandroid.ppjoke.ui.MutableDataSource;
 
 public class HomeViewModel extends AbsViewModel<Feed> {
 
@@ -92,6 +93,13 @@ public class HomeViewModel extends AbsViewModel<Feed> {
                 @Override
                 public void onCacheSuccess(ApiResponse<List<Feed>> response) {
                     Log.e("loadData", "onCacheSuccess: ");
+                    MutableDataSource dataSource = new MutableDataSource<Integer, Feed>();
+                    if (response.body != null) {
+                        dataSource.data.addAll(response.body);
+                        PagedList pagedList = dataSource.buildNewPagedList(config);
+                        cacheLiveData.postValue(pagedList);
+                    }
+
                 }
             });
         }

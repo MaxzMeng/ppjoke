@@ -2,7 +2,9 @@ package me.maxandroid.ppjoke.model;
 
 import androidx.annotation.Nullable;
 
-public class Comment {
+import java.io.Serializable;
+
+public class Comment implements Serializable {
 
     /**
      * id : 784
