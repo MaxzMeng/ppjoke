@@ -16,6 +16,7 @@ import me.maxandroid.ppjoke.R;
 import me.maxandroid.ppjoke.databinding.LayoutFeedTypeImageBinding;
 import me.maxandroid.ppjoke.databinding.LayoutFeedTypeVideoBinding;
 import me.maxandroid.ppjoke.model.Feed;
+import me.maxandroid.ppjoke.view.ListPlayerView;
 
 public class FeedAdapter extends PagedListAdapter<Feed, FeedAdapter.ViewHolder> {
 
@@ -69,7 +70,7 @@ public class FeedAdapter extends PagedListAdapter<Feed, FeedAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private ViewDataBinding mBinding;
-
+        public ListPlayerView listPlayerView;
         public ViewHolder(@NonNull View itemView, ViewDataBinding binding) {
             super(itemView);
             this.mBinding = binding;
@@ -86,7 +87,16 @@ public class FeedAdapter extends PagedListAdapter<Feed, FeedAdapter.ViewHolder> 
                 videoBinding.setLifeCycleOwner(mLifecycleOwner);
                 videoBinding.setFeed(item);
                 videoBinding.listPlayerView.bindData(category, item.width, item.height, item.cover, item.url);
+                listPlayerView = videoBinding.listPlayerView;
             }
+        }
+
+        public boolean isVideoItem() {
+            return mBinding instanceof LayoutFeedTypeVideoBinding;
+        }
+
+        public ListPlayerView getListPlayerView() {
+            return listPlayerView;
         }
     }
 }

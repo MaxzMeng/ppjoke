@@ -57,6 +57,9 @@ public abstract class Request<T> implements Cloneable {
     }
 
     public Request<T> addParam(String key, Object value) {
+        if (value == null) {
+            return this;
+        }
         //int string byte char
         try {
             if (value.getClass() == String.class) {
