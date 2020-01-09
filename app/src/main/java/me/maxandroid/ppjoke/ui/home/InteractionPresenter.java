@@ -1,17 +1,24 @@
 package me.maxandroid.ppjoke.ui.home;
 
+import android.content.Context;
+import android.view.View;
+
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.Date;
+
 import me.maxandroid.libcommon.AppGlobals;
 import me.maxandroid.network.libnetwork.ApiResponse;
 import me.maxandroid.network.libnetwork.ApiService;
 import me.maxandroid.network.libnetwork.JsonCallback;
+import me.maxandroid.ppjoke.model.Comment;
 import me.maxandroid.ppjoke.model.Feed;
 import me.maxandroid.ppjoke.model.User;
+import me.maxandroid.ppjoke.ui.ShareDialog;
 import me.maxandroid.ppjoke.ui.login.UserManager;
 
 public class InteractionPresenter {
@@ -19,6 +26,10 @@ public class InteractionPresenter {
     private static final String URL_TOGGLE_FEED_LIK = "/ugc/toggleFeedLike";
 
     private static final String URL_TOGGLE_FEED_DISS = "/ugc/dissFeed";
+
+    private static final String URL_SHARE = "/ugc/increaseShareCount";
+
+    private static final String URL_TOGGLE_COMMENT_LIKE = "/ugc/toggleCommentLike";
 
     public static void toggleFeedLike(LifecycleOwner owner, Feed feed) {
         if (!UserManager.get().isLogin()) {
@@ -86,4 +97,65 @@ public class InteractionPresenter {
                 });
     }
 
+    public static void openShare(Context context, Feed feed) {
+
+        String url = "https://h5.pipix.com/item/%s?app_id=1319&app=super&timestamp=%s&user_id=%s";
+        String format = String.format(url, feed.itemId, new Date().getTime(), UserManager.get().getUserId());
+        ShareDialog shareDialog = new ShareDialog(context);
+        shareDialog.setShareContent(format);
+        shareDialog.setShareItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ApiService.get(URL_SHARE)
+                        .addParam("itemId", feed.itemId)
+                        .execute(new JsonCallback<JSONObject>() {
+                            @Override
+                            public void onSuccess(ApiResponse<JSONObject> response) {
+                                if (response.body != null) {
+                                    int count = response.body.getIntValue("count");
+                                    feed.getUgc().setShareCount(count);
+                                }
+                            }
+                        });
+            }
+        });
+
+        shareDialog.show();
+    }
+
+    public static void toggleCommentLike(LifecycleOwner owner, Comment comment) {
+        if (!UserManager.get().isLogin()) {
+            LiveData<User> liveData = UserManager.get().login(AppGlobals.getApplication());
+            liveData.observe(owner, new Observer<User>() {
+                @Override
+                public void onChanged(User user) {
+                    liveData.removeObserver(this);
+                    if (user != null) {
+                        toggleCommentLikeInternal(comment);
+                    }
+                }
+            });
+            return;
+
+        }
+
+        toggleCommentLikeInternal(comment);
+    }
+
+    private static void toggleCommentLikeInternal(Comment comment) {
+
+        ApiService.get(URL_TOGGLE_COMMENT_LIKE)
+                .addParam("commentId", comment.commentId)
+                .addParam("userId", UserManager.get().getUserId())
+                .execute(new JsonCallback<JSONObject>() {
+                    @Override
+                    public void onSuccess(ApiResponse<JSONObject> response) {
+                        if (response.body != null) {
+                            boolean hasLiked = response.body.getBooleanValue("hasLiked");
+                            comment.getUgc().setHasLiked(hasLiked);
+                        }
+                    }
+                });
+    }
 }

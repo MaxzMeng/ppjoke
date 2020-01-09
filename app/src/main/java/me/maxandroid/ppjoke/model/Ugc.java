@@ -57,6 +57,16 @@ public class Ugc extends BaseObservable implements Serializable {
         notifyPropertyChanged(BR._all);
     }
 
+    @Bindable
+    public int getShareCount() {
+        return shareCount;
+    }
+
+    public void setShareCount(int shareCount) {
+        this.shareCount = shareCount;
+        notifyPropertyChanged(BR._all);
+    }
+
     @Override
     public boolean equals(@Nullable Object obj) {
         if (obj == null || !(obj instanceof Ugc))

@@ -78,13 +78,13 @@ public class FeedAdapter extends PagedListAdapter<Feed, FeedAdapter.ViewHolder> 
         public void bindData(Feed item) {
             if (mBinding instanceof LayoutFeedTypeImageBinding) {
                 LayoutFeedTypeImageBinding imageBinding = (LayoutFeedTypeImageBinding) mBinding;
-                imageBinding.setLifecycleOwner(mLifecycleOwner);
+                imageBinding.setLifeCycleOwner(mLifecycleOwner);
                 imageBinding.setFeed(item);
                 imageBinding.feedImage.bindData(item.width, item.height, 16, item.cover);
             } else {
                 LayoutFeedTypeVideoBinding videoBinding = (LayoutFeedTypeVideoBinding) mBinding;
+                videoBinding.setLifeCycleOwner(mLifecycleOwner);
                 videoBinding.setFeed(item);
-                videoBinding.setLifecycleOwner(mLifecycleOwner);
                 videoBinding.listPlayerView.bindData(category, item.width, item.height, item.cover, item.url);
             }
         }

@@ -7,6 +7,10 @@
         <variable
             name="feed"
             type="me.maxandroid.ppjoke.model.Feed" />
+
+        <variable
+            name="lifeCycleOwner"
+            type="androidx.lifecycle.LifecycleOwner" />
     </data>
 
     <LinearLayout
@@ -41,11 +45,13 @@
 
         <include
             layout="@layout/layout_feed_top_comment"
-            app:comment="@{feed.topComment}" />
+            app:comment="@{feed.topComment}"
+            app:lifeCycleOwner="@{lifeCycleOwner}" />
 
         <include
             android:id="@+id/interaction_binding"
             layout="@layout/layout_feed_interaction"
-            app:feed="@{feed}" />
+            app:feed="@{feed}"
+            app:lifeCycleOwner="@{lifeCycleOwner}" />
     </LinearLayout>
 </layout>

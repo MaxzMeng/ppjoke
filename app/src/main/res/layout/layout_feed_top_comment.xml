@@ -9,6 +9,12 @@
             name="comment"
             type="me.maxandroid.ppjoke.model.Comment" />
 
+        <variable
+            name="lifeCycleOwner"
+            type="androidx.lifecycle.LifecycleOwner" />
+
+        <import type="me.maxandroid.ppjoke.ui.home.InteractionPresenter" />
+
         <import type="android.text.TextUtils" />
 
         <import type="android.view.View" />
@@ -85,6 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_4"
+                    android:onClick="@{()->InteractionPresenter.toggleCommentLike(lifeCycleOwner,comment)}"
                     android:padding="2dp"
                     android:src="@{comment.ugc.hasLiked?@drawable/icon_cell_liked:@drawable/icon_cell_like}"
                     tools:src="@drawable/icon_cell_liked">

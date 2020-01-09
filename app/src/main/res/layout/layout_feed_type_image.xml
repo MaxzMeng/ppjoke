@@ -8,11 +8,16 @@
             name="feed"
             type="me.maxandroid.ppjoke.model.Feed" />
 
+        <variable
+            name="lifeCycleOwner"
+            type="androidx.lifecycle.LifecycleOwner" />
+
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/color_white"
         android:orientation="vertical"
         android:paddingTop="@dimen/dp_10">
 
@@ -23,13 +28,14 @@
 
         <include
             layout="@layout/layout_feed_text"
-            app:feedText="@{feed.feeds_text}" />
+            app:feedText="@{feed.feeds_text}"
+            app:lines="@{3}" />
 
 
         <!--        图片、视频区域-->
         <me.maxandroid.ppjoke.view.PPImageView
             android:id="@+id/feed_image"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_10" />
 
@@ -39,10 +45,13 @@
 
         <include
             layout="@layout/layout_feed_top_comment"
+            app:lifeCycleOwner="@{lifeCycleOwner}"
             app:comment="@{feed.topComment}" />
 
         <include
+            android:id="@+id/interaction_binding"
             layout="@layout/layout_feed_interaction"
-            app:feed="@{feed}" />
+            app:feed="@{feed}"
+            app:lifeCycleOwner="@{lifeCycleOwner}" />
     </LinearLayout>
 </layout>

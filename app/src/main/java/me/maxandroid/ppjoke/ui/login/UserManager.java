@@ -9,6 +9,8 @@ import androidx.lifecycle.MutableLiveData;
 import me.maxandroid.network.libnetwork.cache.CacheManager;
 import me.maxandroid.ppjoke.model.User;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class UserManager {
     private static final String KEY_CACHE_USER = "cache_user";
     private static UserManager mUserManager = new UserManager();
@@ -35,6 +37,7 @@ public class UserManager {
 
     public LiveData<User> login(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
         return userLiveData;
     }
