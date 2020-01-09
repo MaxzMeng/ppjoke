@@ -1,6 +1,7 @@
 package me.maxandroid.ppjoke.ui.home;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -52,7 +53,7 @@ public class HomeFragment extends AbsListFragment<Feed, HomeViewModel> {
 
     @Override
     public PagedListAdapter getAdapter() {
-        String feedType = (getArguments() == null || getArguments().getString("feedType") == null) ? "all" : getArguments().getString("feedType");
+        feedType = (getArguments() == null || getArguments().getString("feedType") == null) ? "all" : getArguments().getString("feedType");
         return new FeedAdapter(this, feedType) {
             @Override
             public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
@@ -96,6 +97,16 @@ public class HomeFragment extends AbsListFragment<Feed, HomeViewModel> {
 
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            playDetector.onPause();
+        } else {
+            playDetector.onResume();
+        }
+    }
+
+    @Override
     public void onPause() {
         playDetector.onPause();
         super.onPause();
@@ -104,7 +115,18 @@ public class HomeFragment extends AbsListFragment<Feed, HomeViewModel> {
     @Override
     public void onResume() {
         super.onResume();
-        playDetector.onResume();
+        if (getParentFragment() != null) {
+            if (getParentFragment().isVisible() && isVisible()) {
+                Log.e("homefragment", "onResume: feedtype:" + feedType);
+                playDetector.onResume();
+            }
+        } else {
+            if (isVisible()) {
+                Log.e("homefragment", "onResume: feedtype:" + feedType);
+                playDetector.onResume();
+                binding.getRoot().requestFitSystemWindows();
+            }
+        }
     }
 
 

@@ -44,9 +44,9 @@ public class FeedAdapter extends PagedListAdapter<Feed, FeedAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ViewDataBinding binding;
         if (viewType == Feed.TYPE_IMAGE_TEXT) {
-            binding = LayoutFeedTypeImageBinding.inflate(LayoutInflater.from(parent.getContext()));
+            binding = LayoutFeedTypeImageBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false);
         } else {
-            binding = LayoutFeedTypeVideoBinding.inflate(LayoutInflater.from(parent.getContext()));
+            binding = LayoutFeedTypeVideoBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         }
         return new ViewHolder(binding.getRoot(), binding);
     }
@@ -59,12 +59,7 @@ public class FeedAdapter extends PagedListAdapter<Feed, FeedAdapter.ViewHolder> 
     @Override
     public int getItemViewType(int position) {
         Feed feed = getItem(position);
-        if (feed.itemType == Feed.TYPE_IMAGE_TEXT) {
-            return R.layout.layout_feed_type_image;
-        } else if (feed.itemType == Feed.TYPE_VIDEO) {
-            return R.layout.layout_feed_type_video;
-        }
-        return 0;
+        return feed.itemType;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
