@@ -24,6 +24,7 @@ import me.maxandroid.network.libnetwork.Request;
 import me.maxandroid.ppjoke.AbsViewModel;
 import me.maxandroid.ppjoke.model.Feed;
 import me.maxandroid.ppjoke.ui.MutableDataSource;
+import me.maxandroid.ppjoke.ui.login.UserManager;
 
 public class HomeViewModel extends AbsViewModel<Feed> {
 
@@ -81,12 +82,11 @@ public class HomeViewModel extends AbsViewModel<Feed> {
         //feeds/queryHotFeedsList
         Request request = ApiService.get("/feeds/queryHotFeedsList")
                 .addParam("feedType", "")
-                .addParam("userId", 0)
+                .addParam("userId", UserManager.get().getUserId())
                 .addParam("feedId", key)
                 .addParam("pageCount", count)
                 .responseType(new TypeReference<ArrayList<Feed>>() {
                 }.getType());
-
         if (witchCache) {
             request.cacheStrategy(Request.CACHE_ONLY);
             request.execute(new JsonCallback<List<Feed>>() {

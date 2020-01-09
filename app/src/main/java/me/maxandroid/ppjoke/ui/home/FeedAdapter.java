@@ -1,11 +1,13 @@
 package me.maxandroid.ppjoke.ui.home;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,8 +20,9 @@ import me.maxandroid.ppjoke.model.Feed;
 public class FeedAdapter extends PagedListAdapter<Feed, FeedAdapter.ViewHolder> {
 
     private String category;
+    private LifecycleOwner mLifecycleOwner;
 
-    protected FeedAdapter(String category) {
+    protected FeedAdapter(LifecycleOwner lifecycleOwner, String category) {
         super(new DiffUtil.ItemCallback<Feed>() {
             @Override
             public boolean areItemsTheSame(@NonNull Feed oldItem, @NonNull Feed newItem) {
@@ -32,6 +35,7 @@ public class FeedAdapter extends PagedListAdapter<Feed, FeedAdapter.ViewHolder> 
             }
         });
         this.category = category;
+        this.mLifecycleOwner = lifecycleOwner;
     }
 
     @NonNull
@@ -74,11 +78,13 @@ public class FeedAdapter extends PagedListAdapter<Feed, FeedAdapter.ViewHolder> 
         public void bindData(Feed item) {
             if (mBinding instanceof LayoutFeedTypeImageBinding) {
                 LayoutFeedTypeImageBinding imageBinding = (LayoutFeedTypeImageBinding) mBinding;
+                imageBinding.setLifecycleOwner(mLifecycleOwner);
                 imageBinding.setFeed(item);
                 imageBinding.feedImage.bindData(item.width, item.height, 16, item.cover);
             } else {
                 LayoutFeedTypeVideoBinding videoBinding = (LayoutFeedTypeVideoBinding) mBinding;
                 videoBinding.setFeed(item);
+                videoBinding.setLifecycleOwner(mLifecycleOwner);
                 videoBinding.listPlayerView.bindData(category, item.width, item.height, item.cover, item.url);
             }
         }
