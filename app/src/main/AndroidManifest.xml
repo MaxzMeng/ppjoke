@@ -17,6 +17,7 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
         <activity
+            android:theme="@style/launcher"
             android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>
