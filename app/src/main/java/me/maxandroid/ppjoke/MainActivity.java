@@ -28,6 +28,7 @@ import me.maxandroid.ppjoke.ui.login.UserManager;
 import me.maxandroid.ppjoke.ui.view.AppBottomBar;
 import me.maxandroid.ppjoke.utils.AppConfig;
 import me.maxandroid.ppjoke.utils.NavGraphBuilder;
+import me.maxandroid.ppjoke.utils.StatusBarUtils;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        StatusBarUtils.fitSystemBar(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         navView = findViewById(R.id.nav_view);
