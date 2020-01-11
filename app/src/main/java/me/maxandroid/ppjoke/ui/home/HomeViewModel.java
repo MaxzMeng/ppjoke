@@ -93,7 +93,7 @@ public class HomeViewModel extends AbsViewModel<Feed> {
                 @Override
                 public void onCacheSuccess(ApiResponse<List<Feed>> response) {
                     Log.e("loadData", "onCacheSuccess: ");
-                    MutableDataSource dataSource = new MutableDataSource<Integer, Feed>();
+                    MutableDataSource dataSource = new MutableDataSource<Feed>();
                     if (response.body != null) {
                         dataSource.data.addAll(response.body);
                         PagedList pagedList = dataSource.buildNewPagedList(config);
@@ -107,16 +107,23 @@ public class HomeViewModel extends AbsViewModel<Feed> {
         try {
             Request netRequest = witchCache ? request.clone() : request;
             netRequest.cacheStrategy(key == 0 ? Request.NET_CACHE : Request.NET_ONLY);
-            ApiResponse<List<Feed>> response = netRequest.execute();
-            List<Feed> data = response.body == null ? Collections.emptyList() : response.body;
+            netRequest.execute(new JsonCallback<List<Feed>>() {
+                @Override
+                public void onSuccess(ApiResponse<List<Feed>> response) {
+                    callback.onResult(response.body);
+                    if (key > 0) {
+                        //通过BoundaryPageData发送数据 告诉UI层 是否应该主动关闭上拉加载分页的动画
+                        ((MutableLiveData) getBoundaryPageData()).postValue(response.body.size() > 0);
+                        loadAfter.set(false);
+                    }
+                }
 
-            callback.onResult(data);
+                @Override
+                public void onError(ApiResponse<List<Feed>> response) {
+                    callback.onResult(Collections.emptyList());
+                }
+            });
 
-            if (key > 0) {
-                //通过BoundaryPageData发送数据 告诉UI层 是否应该主动关闭上拉加载分页的动画
-                ((MutableLiveData) getBoundaryPageData()).postValue(data.size() > 0);
-                loadAfter.set(false);
-            }
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

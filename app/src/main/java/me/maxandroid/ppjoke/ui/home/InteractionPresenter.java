@@ -2,7 +2,9 @@ package me.maxandroid.ppjoke.ui.home;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.arch.core.executor.ArchTaskExecutor;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -157,5 +159,88 @@ public class InteractionPresenter {
                         }
                     }
                 });
+    }
+
+
+    public static void toggleFeedFavorite(LifecycleOwner owner, Feed feed) {
+        if (!UserManager.get().isLogin()) {
+            UserManager.get().login(AppGlobals.getApplication()).observe(owner, new Observer<User>() {
+                @Override
+                public void onChanged(User user) {
+                    if (user != null) {
+                        toggleFeedFavorite(feed);
+                    }
+                }
+            });
+        } else {
+            toggleFeedFavorite(feed);
+        }
+    }
+
+    private static void toggleFeedFavorite(Feed feed) {
+        ApiService.get("/ugc/toggleFavorite")
+                .addParam("itemId", feed.itemId)
+                .addParam("userId", UserManager.get().getUserId())
+                .execute(new JsonCallback<JSONObject>() {
+                    @Override
+                    public void onSuccess(ApiResponse<JSONObject> response) {
+                        if (response.body != null) {
+                            boolean hasFavorite = response.body.getBooleanValue("hasFavorite");
+                            feed.getUgc().setHasFavorite(hasFavorite);
+                        }
+                    }
+
+                    @Override
+                    public void onError(ApiResponse<JSONObject> response) {
+                        showToast(response.message);
+                    }
+                });
+    }
+
+
+    public static void toggleFollowUser(LifecycleOwner owner, User user) {
+        if (!UserManager.get().isLogin()) {
+            UserManager.get().login(AppGlobals.getApplication())
+                    .observe(owner, new Observer<User>() {
+                        @Override
+                        public void onChanged(User user) {
+                            if (user != null) {
+                                toggleFollowUser(user);
+                            }
+                        }
+                    });
+        } else {
+            toggleFollowUser(user);
+        }
+
+    }
+
+    private static void toggleFollowUser(User user) {
+        ApiService.get("/ugc/toggleUserFollow")
+                .addParam("followUserId", UserManager.get().getUserId())
+                .addParam("userId", user.userId)
+                .execute(new JsonCallback<JSONObject>() {
+                    @Override
+                    public void onSuccess(ApiResponse<JSONObject> response) {
+                        if (response.body != null) {
+                            boolean hasFollow = response.body.getBooleanValue("hasLiked");
+                            user.setHasFollow(hasFollow);
+                        }
+                    }
+
+                    @Override
+                    public void onError(ApiResponse<JSONObject> response) {
+                        showToast(response.message);
+                    }
+                });
+    }
+
+    private static void showToast(String message) {
+        ArchTaskExecutor.getMainThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(AppGlobals.getApplication(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

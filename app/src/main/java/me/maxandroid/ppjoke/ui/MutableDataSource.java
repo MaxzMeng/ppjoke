@@ -1,5 +1,7 @@
 package me.maxandroid.ppjoke.ui;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.arch.core.executor.ArchTaskExecutor;
 import androidx.paging.PageKeyedDataSource;
@@ -9,11 +11,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MutableDataSource<Key, Value> extends PageKeyedDataSource<Key, Value> {
+public class MutableDataSource<Value> extends PageKeyedDataSource<Integer, Value> {
     public List<Value> data = new ArrayList<>();
 
     public PagedList<Value> buildNewPagedList(PagedList.Config config) {
-        PagedList<Value> pagedList = new PagedList.Builder<Key, Value>(this, config)
+        PagedList<Value> pagedList = new PagedList.Builder<Integer, Value>(this, config)
                 .setFetchExecutor(ArchTaskExecutor.getIOThreadExecutor())
                 .setNotifyExecutor(ArchTaskExecutor.getMainThreadExecutor())
                 .build();
@@ -22,17 +24,18 @@ public class MutableDataSource<Key, Value> extends PageKeyedDataSource<Key, Valu
     }
 
     @Override
-    public void loadInitial(@NonNull LoadInitialParams<Key> params, @NonNull LoadInitialCallback<Key, Value> callback) {
+    public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Integer, Value> callback) {
         callback.onResult(data, null, null);
     }
 
     @Override
-    public void loadBefore(@NonNull LoadParams<Key> params, @NonNull LoadCallback<Key, Value> callback) {
+    public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Value> callback) {
         callback.onResult(Collections.emptyList(), null);
     }
 
     @Override
-    public void loadAfter(@NonNull LoadParams<Key> params, @NonNull LoadCallback<Key, Value> callback) {
+    public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Value> callback) {
         callback.onResult(Collections.emptyList(), null);
+        Log.e("MutableDataSource", "loadAfter: ");
     }
 }

@@ -1,8 +1,14 @@
 package me.maxandroid.ppjoke.model;
 
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+
 import java.io.Serializable;
 
-public class User implements Serializable {
+import me.maxandroid.ppjoke.BR;
+
+
+public class User extends BaseObservable implements Serializable {
 
     /**
      * id : 962
@@ -41,4 +47,15 @@ public class User implements Serializable {
     public int favoriteCount;
     public int feedCount;
     public boolean hasFollow;
+
+
+    @Bindable
+    public boolean isHasFollow() {
+        return hasFollow;
+    }
+
+    public void setHasFollow(boolean hasFollow) {
+        this.hasFollow = hasFollow;
+        notifyPropertyChanged(BR._all);
+    }
 }

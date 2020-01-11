@@ -26,9 +26,9 @@ public class HomeSecondFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String myArg = HomeSecondFragmentArgs.fromBundle(getArguments()).getMyArg();
-        TextView textView = view.findViewById(R.id.textview_home_second);
-        textView.setText(getString(R.string.hello_home_second, myArg));
+        //String myArg = HomeSecondFragmentArgs.fromBundle(getArguments()).getMyArg();
+        //TextView textView = view.findViewById(R.id.textview_home_second);
+        //textView.setText(getString(R.string.hello_home_second, myArg));
 
         view.findViewById(R.id.button_home_second).setOnClickListener(new View.OnClickListener() {
             @Override
