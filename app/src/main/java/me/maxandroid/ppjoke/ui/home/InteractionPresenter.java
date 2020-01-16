@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import androidx.arch.core.executor.ArchTaskExecutor;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
 import com.alibaba.fastjson.JSONObject;
@@ -14,6 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.Date;
 
 import me.maxandroid.libcommon.AppGlobals;
+import me.maxandroid.libcommon.LiveDataBus;
 import me.maxandroid.network.libnetwork.ApiResponse;
 import me.maxandroid.network.libnetwork.ApiService;
 import me.maxandroid.network.libnetwork.JsonCallback;
@@ -25,6 +25,7 @@ import me.maxandroid.ppjoke.ui.login.UserManager;
 
 public class InteractionPresenter {
 
+    public static final String DATA_FROM_INTERACTION = "data_from_interaction";
     private static final String URL_TOGGLE_FEED_LIK = "/ugc/toggleFeedLike";
 
     private static final String URL_TOGGLE_FEED_DISS = "/ugc/dissFeed";
@@ -34,20 +35,15 @@ public class InteractionPresenter {
     private static final String URL_TOGGLE_COMMENT_LIKE = "/ugc/toggleCommentLike";
 
     public static void toggleFeedLike(LifecycleOwner owner, Feed feed) {
-        if (!UserManager.get().isLogin()) {
-            LiveData<User> loginLiveData = UserManager.get().login(AppGlobals.getApplication());
-            loginLiveData.observe(owner, new Observer<User>() {
-                @Override
-                public void onChanged(User user) {
-                    if (user != null) {
-                        toggleFeedLikeInternal(feed);
-                    }
-                    loginLiveData.removeObserver(this);
-                }
-            });
-            return;
+        if (!isLogin(owner, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                toggleFeedLikeInternal(feed);
+            }
+        })) {
+        } else {
+            toggleFeedLikeInternal(feed);
         }
-        toggleFeedLikeInternal(feed);
     }
 
     private static void toggleFeedLikeInternal(Feed feed) {
@@ -60,32 +56,31 @@ public class InteractionPresenter {
                         if (response.body != null) {
                             boolean hasLiked = response.body.getBoolean("hasLiked").booleanValue();
                             feed.getUgc().setHasLiked(hasLiked);
+                            LiveDataBus.get().with(DATA_FROM_INTERACTION)
+                                    .postValue(feed);
                         }
+                    }
 
+                    @Override
+                    public void onError(ApiResponse<JSONObject> response) {
+                        showToast(response.message);
                     }
                 });
     }
 
     public static void toggleFeedDiss(LifecycleOwner owner, Feed feed) {
-        if (!UserManager.get().isLogin()) {
-            LiveData<User> loginLiveData = UserManager.get().login(AppGlobals.getApplication());
-            loginLiveData.observe(owner, new Observer<User>() {
-                @Override
-                public void onChanged(User user) {
-                    if (user != null) {
-                        toggleFeedDissInternal(feed);
-                    }
-                    loginLiveData.removeObserver(this);
-                }
-            });
-            return;
+        if (!isLogin(owner, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                toggleFeedDissInternal(feed);
+            }
+        })) {
+        } else {
+            toggleFeedDissInternal(feed);
         }
-
-        toggleFeedDissInternal(feed);
     }
 
     private static void toggleFeedDissInternal(Feed feed) {
-
         ApiService.get(URL_TOGGLE_FEED_DISS).addParam("userId", UserManager.get().getUserId())
                 .addParam("itemId", feed.itemId)
                 .execute(new JsonCallback<JSONObject>() {
@@ -96,8 +91,14 @@ public class InteractionPresenter {
                             feed.getUgc().setHasdiss(hasLiked);
                         }
                     }
+
+                    @Override
+                    public void onError(ApiResponse<JSONObject> response) {
+                        showToast(response.message);
+                    }
                 });
     }
+
 
     public static void openShare(Context context, Feed feed) {
 
@@ -119,6 +120,11 @@ public class InteractionPresenter {
                                     feed.getUgc().setShareCount(count);
                                 }
                             }
+
+                            @Override
+                            public void onError(ApiResponse<JSONObject> response) {
+                                showToast(response.message);
+                            }
                         });
             }
         });
@@ -127,22 +133,15 @@ public class InteractionPresenter {
     }
 
     public static void toggleCommentLike(LifecycleOwner owner, Comment comment) {
-        if (!UserManager.get().isLogin()) {
-            LiveData<User> liveData = UserManager.get().login(AppGlobals.getApplication());
-            liveData.observe(owner, new Observer<User>() {
-                @Override
-                public void onChanged(User user) {
-                    liveData.removeObserver(this);
-                    if (user != null) {
-                        toggleCommentLikeInternal(comment);
-                    }
-                }
-            });
-            return;
-
+        if (!isLogin(owner, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                toggleCommentLikeInternal(comment);
+            }
+        })) {
+        } else {
+            toggleCommentLikeInternal(comment);
         }
-
-        toggleCommentLikeInternal(comment);
     }
 
     private static void toggleCommentLikeInternal(Comment comment) {
@@ -158,20 +157,21 @@ public class InteractionPresenter {
                             comment.getUgc().setHasLiked(hasLiked);
                         }
                     }
+
+                    @Override
+                    public void onError(ApiResponse<JSONObject> response) {
+                        showToast(response.message);
+                    }
                 });
     }
 
-
     public static void toggleFeedFavorite(LifecycleOwner owner, Feed feed) {
-        if (!UserManager.get().isLogin()) {
-            UserManager.get().login(AppGlobals.getApplication()).observe(owner, new Observer<User>() {
-                @Override
-                public void onChanged(User user) {
-                    if (user != null) {
-                        toggleFeedFavorite(feed);
-                    }
-                }
-            });
+        if (!isLogin(owner, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                toggleFeedFavorite(feed);
+            }
+        })) {
         } else {
             toggleFeedFavorite(feed);
         }
@@ -187,6 +187,8 @@ public class InteractionPresenter {
                         if (response.body != null) {
                             boolean hasFavorite = response.body.getBooleanValue("hasFavorite");
                             feed.getUgc().setHasFavorite(hasFavorite);
+                            LiveDataBus.get().with(DATA_FROM_INTERACTION)
+                                    .postValue(feed);
                         }
                     }
 
@@ -198,33 +200,30 @@ public class InteractionPresenter {
     }
 
 
-    public static void toggleFollowUser(LifecycleOwner owner, User user) {
-        if (!UserManager.get().isLogin()) {
-            UserManager.get().login(AppGlobals.getApplication())
-                    .observe(owner, new Observer<User>() {
-                        @Override
-                        public void onChanged(User user) {
-                            if (user != null) {
-                                toggleFollowUser(user);
-                            }
-                        }
-                    });
+    public static void toggleFollowUser(LifecycleOwner owner, Feed feed) {
+        if (!isLogin(owner, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                toggleFollowUser(feed);
+            }
+        })) {
         } else {
-            toggleFollowUser(user);
+            toggleFollowUser(feed);
         }
-
     }
 
-    private static void toggleFollowUser(User user) {
+    private static void toggleFollowUser(Feed feed) {
         ApiService.get("/ugc/toggleUserFollow")
                 .addParam("followUserId", UserManager.get().getUserId())
-                .addParam("userId", user.userId)
+                .addParam("userId", feed.author.userId)
                 .execute(new JsonCallback<JSONObject>() {
                     @Override
                     public void onSuccess(ApiResponse<JSONObject> response) {
                         if (response.body != null) {
                             boolean hasFollow = response.body.getBooleanValue("hasLiked");
-                            user.setHasFollow(hasFollow);
+                            feed.getAuthor().setHasFollow(hasFollow);
+                            LiveDataBus.get().with(DATA_FROM_INTERACTION)
+                                    .postValue(feed);
                         }
                     }
 
@@ -242,5 +241,22 @@ public class InteractionPresenter {
                 Toast.makeText(AppGlobals.getApplication(), message, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private static boolean isLogin(LifecycleOwner owner, Observer<User> observer) {
+        if (UserManager.get().isLogin()) {
+            return true;
+        } else {
+            UserManager.get().login(AppGlobals.getApplication())
+                    .observe(owner, new Observer<User>() {
+                        @Override
+                        public void onChanged(User user) {
+                            if (user != null && observer != null) {
+                                observer.onChanged(user);
+                            }
+                        }
+                    });
+            return false;
+        }
     }
 }
